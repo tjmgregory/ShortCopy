@@ -17,7 +17,7 @@ Short Copy reads the current page's address only when you invoke it. It sends th
 
 Works with HTTP and HTTPS web pages. An internet connection and an available is.gd service are required. Chrome settings pages and local files cannot be shortened.
 
-WHAT'S NEW IN 1.2.1
+WHAT'S NEW IN 1.2.2
 Updated for Manifest V3 and current Chrome. Added toolbar access, clearer error notifications and checks to avoid replacing your clipboard when shortening fails.
 
 Source and support: https://github.com/tjmgregory/ShortCopy

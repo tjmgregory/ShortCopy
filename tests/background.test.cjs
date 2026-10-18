@@ -9,9 +9,10 @@ function setup(options = {}) {
     fetch: async (...args) => {
       calls.fetch.push(args);
       if (options.networkError) throw new TypeError('Network failed');
-      return { ok: options.httpOk ?? true, json: async () => options.data ?? { shorturl: 'https://is.gd/abc123' } };
+      return { ok: options.httpOk ?? true, status: options.status ?? 503, json: async () => { if (options.invalidJson) throw new SyntaxError('Invalid JSON'); return options.data ?? { shorturl: 'https://is.gd/abc123' }; } };
     },
     chrome: {
+      permissions: { contains: async () => options.hasAccess ?? true },
       tabs: { query: async () => [{ url: 'https://example.com/?x=1&y=2' }] },
       runtime: { getContexts: async () => [], getURL: p => `chrome-extension://test/${p}`,
         sendMessage: async m => { calls.copied.push(m.text); return { ok: options.copyOk ?? true }; } },
@@ -101,3 +102,18 @@ test('notification failure does not turn a successful copy into an error', async
   assert.deepEqual(calls.badges, ['...', '✓']);
   assert.deepEqual(calls.copied, ['https://is.gd/abc123']);
 });
+
+for (const [options, message] of [
+  [{ hasAccess: false }, /not granted.*is.gd/],
+  [{ networkError: true }, /could not connect to is.gd/],
+  [{ invalidJson: true }, /responded.*valid shortening response/],
+  [{ httpOk: false, status: 429 }, /HTTP 429/],
+  [{ copyOk: false }, /shortened.*could not copy/],
+]) {
+  test(`reports the actual failure stage: ${JSON.stringify(options)}`, async () => {
+    const { calls, run } = setup(options);
+    await run();
+    assert.match(calls.notices[0].message, message);
+    if (options.hasAccess === false) assert.equal(calls.fetch.length, 0);
+  });
+}

@@ -32,6 +32,37 @@ async function copyToClipboard(text) {
   }
 }
 
+async function shortenUrl(url) {
+  const hasAccess = await chrome.permissions.contains({ origins: ['https://is.gd/*'] });
+  if (!hasAccess) {
+    throw new Error('Chrome has not granted Short Copy access to is.gd. Allow is.gd in the extension’s site access settings.');
+  }
+
+  let response;
+  try {
+    response = await fetch('https://is.gd/create.php', {
+      method: 'POST',
+      body: new URLSearchParams({ format: 'json', url }),
+      credentials: 'omit',
+      signal: AbortSignal.timeout(15000),
+    });
+  } catch (error) {
+    if (error.name === 'TimeoutError' || error.name === 'AbortError') {
+      throw new Error('is.gd did not respond within 15 seconds. Please try again.');
+    }
+    throw new Error('Chrome could not connect to is.gd. Check your connection and whether a VPN or blocker is blocking is.gd.');
+  }
+
+  if (!response.ok) {
+    throw new Error(`is.gd returned HTTP ${response.status}. Please try again later.`);
+  }
+  try {
+    return await response.json();
+  } catch {
+    throw new Error('is.gd responded, but did not return a valid shortening response. Please try again later.');
+  }
+}
+
 async function shortenAndCopy(tab) {
   if (busy) return;
   busy = true;
@@ -45,24 +76,19 @@ async function shortenAndCopy(tab) {
     if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) {
       throw new Error('Short Copy supports HTTP and HTTPS links without embedded passwords.');
     }
-    const response = await fetch('https://is.gd/create.php', {
-      method: 'POST',
-      body: new URLSearchParams({ format: 'json', url: url.href }),
-      credentials: 'omit',
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!response.ok) throw new Error('The shortening service is unavailable. Please try again later.');
-    const data = await response.json();
+    const data = await shortenUrl(url.href);
     if (data.errorcode || typeof data.shorturl !== 'string' || !/^https:\/\/is\.gd\/[A-Za-z0-9_]+$/.test(data.shorturl)) {
       throw new Error('The shortening service could not shorten this link. Please try another URL or try again later.');
     }
-    await copyToClipboard(data.shorturl);
+    try {
+      await copyToClipboard(data.shorturl);
+    } catch {
+      throw new Error('The link was shortened, but Chrome could not copy it. Reload Short Copy and try again.');
+    }
     await setStatus('✓', 'Short link copied. Click to shorten and copy again.');
     await notify('Copied!', `${data.shorturl} has been copied to your clipboard.`).catch(() => {});
   } catch (error) {
-    const message = error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError
-      ? 'Could not reach the shortening service. Please try again later.'
-      : error.message;
+    const message = error.message || 'Short Copy could not complete this request.';
     await setStatus('!', message);
     await notify('Short Copy could not copy this link', message).catch(() => {});
   } finally {

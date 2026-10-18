@@ -1,6 +1,6 @@
 {
   "name": "Short Copy - URL Shortener & Copy Link",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Shorten URLs and copy links in one step. Use Alt+Shift+C or click the toolbar icon. Free, with no account required.",
   "permissions": [
     "clipboardWrite",

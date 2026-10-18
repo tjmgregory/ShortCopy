@@ -1,8 +1,8 @@
-# Short Copy 1.2.1 release candidate
+# Short Copy 1.2.2 release candidate
 
-`short-copy-1.2.1.zip` contains only the runtime extension files. Archive integrity and manifest field lengths passed. All 23 automated tests passed; a live is.gd API request returned a valid short URL.
+`short-copy-1.2.2.zip` contains only the runtime extension files. Archive integrity and manifest field lengths passed. All 28 automated tests passed; a live is.gd API request returned a valid short URL.
 
-The 1.2.0 archive is superseded by 1.2.1. Toolbar copying was confirmed by Theo on the prior build; keyboard activation still needs validation after reloading 1.2.1.
+The 1.2.0 archive is superseded by 1.2.2. Toolbar copying was confirmed by Theo on the prior build; keyboard activation still needs validation after reloading 1.2.2.
 
 Not yet submitted. Real Chrome integration testing and screenshots are pending: browser navigation to chrome://extensions is blocked by the browser security policy, and navigation to the developer dashboard returns "Not allowed".
 
@@ -15,3 +15,5 @@ Manual test:
 6. Confirm browser settings pages and local files are rejected.
 
 Upload to the original store item only after these pass. Submission text is in ../store/submission.md.
+
+Version 1.2.2 distinguishes withheld is.gd host access, network failure, timeout, HTTP failure, invalid JSON and clipboard failure. Theo confirmed keyboard invocation reaches the loading/error badge on 1.2.1. The underlying runtime error remains unconfirmed until the new diagnostic message is observed.

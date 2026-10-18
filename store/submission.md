@@ -2,7 +2,7 @@
 
 Existing item: ehelhgbbjhjbfaleajkhjbdpomnbnkob
 Account: tjmgregory@gmail.com
-Version: 1.2.1
+Version: 1.2.2
 Title and summary: manifest.json
 Detailed description: description.txt
 Category: Workflow & Planning (retain existing category if still offered)
