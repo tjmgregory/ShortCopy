@@ -7,7 +7,7 @@ Use `short-copy-1.3.0.zip`. All earlier archives are superseded.
 - 35 automated tests pass, including malformed provider responses, exact URL encoding, native action and legacy shortcut handling, clipboard failures and concurrency.
 - Actual `shortenUrl` function tested with a live da.gd request for a fresh Google Search URL. The short link returned HTTP 302 to the exact input URL. See live-provider-validation.json.
 - Separate live requests created fresh links for a Google support URL and a long Google Search URL; both redirected to the exact input.
-- Theo confirmed keyboard invocation and toolbar copying on previous builds. The new provider still needs a final Chrome smoke test after reloading.
+- Theo confirmed keyboard invocation and toolbar copying on previous builds, then confirmed the new provider worked in Chrome after reloading version 1.3.0 on 18 October 2026.
 
 ## Root cause
 
@@ -19,4 +19,4 @@ Version 1.3.0 replaces is.gd with da.gd. Permissions, privacy policy and store c
 
 ## Remaining release work
 
-Reload the unpacked extension and allow the declared da.gd host permission if Chrome prompts. Test a fresh URL using shortcut and toolbar. Capture real Chrome screenshots. Upload to the existing store item and submit. Browser automation currently blocks chrome://extensions and the developer-dashboard navigation returned Not allowed.
+Capture real Chrome screenshots. Upload to the existing store item and submit. Browser automation blocks chrome://extensions. Following the official Chrome publishing documentation's dashboard link also failed with “The extensions gallery cannot be scripted.” No package or listing changes have been submitted to the store.
