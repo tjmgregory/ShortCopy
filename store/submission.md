@@ -2,7 +2,7 @@
 
 Existing item: ehelhgbbjhjbfaleajkhjbdpomnbnkob
 Account: tjmgregory@gmail.com
-Version: 1.2.0
+Version: 1.2.1
 Title and summary: manifest.json
 Detailed description: description.txt
 Category: Workflow & Planning (retain existing category if still offered)
@@ -29,7 +29,7 @@ Disclose Website history / URLs as processed and transmitted to is.gd for the re
 
 ## Reviewer notes
 
-This updates the original version 1.1.1 from Manifest V2 to Manifest V3. Open https://example.com, invoke Alt+Shift+C or the toolbar icon, then paste into a text field. An is.gd URL should appear. Mac uses Option+Shift+C. The shortcut is configurable at chrome://extensions/shortcuts. The original command ID is retained to preserve existing shortcut assignments. No login or paid account is required.
+This updates the original version 1.1.1 from Manifest V2 to Manifest V3. Open https://example.com, invoke Alt+Shift+C or the toolbar icon, then paste into a text field. An is.gd URL should appear. Mac uses Option+Shift+C. The shortcut is configurable at chrome://extensions/shortcuts. The default keyboard shortcut now uses the native action command. The original command ID remains as a legacy entry for existing shortcut assignments. No login or paid account is required.
 
 ## Pending checks
 

@@ -1,5 +1,12 @@
 let busy = false;
 
+async function setStatus(text, title) {
+  await Promise.all([
+    chrome.action.setBadgeText({ text }),
+    chrome.action.setTitle({ title }),
+  ]).catch(() => {});
+}
+
 async function notify(title, message) {
   await chrome.notifications.create('short-copy', {
     type: 'basic', iconUrl: '48.png', title, message,
@@ -28,6 +35,7 @@ async function copyToClipboard(text) {
 async function shortenAndCopy(tab) {
   if (busy) return;
   busy = true;
+  await setStatus('...', 'Shortening this URL…');
   try {
     if (!tab?.url) [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     let url;
@@ -49,11 +57,13 @@ async function shortenAndCopy(tab) {
       throw new Error('The shortening service could not shorten this link. Please try another URL or try again later.');
     }
     await copyToClipboard(data.shorturl);
-    await notify('Copied!', `${data.shorturl} has been copied to your clipboard.`);
+    await setStatus('✓', 'Short link copied. Click to shorten and copy again.');
+    await notify('Copied!', `${data.shorturl} has been copied to your clipboard.`).catch(() => {});
   } catch (error) {
     const message = error.name === 'TimeoutError' || error instanceof TypeError || error instanceof SyntaxError
       ? 'Could not reach the shortening service. Please try again later.'
       : error.message;
+    await setStatus('!', message);
     await notify('Short Copy could not copy this link', message).catch(() => {});
   } finally {
     busy = false;
@@ -61,6 +71,6 @@ async function shortenAndCopy(tab) {
 }
 
 chrome.commands.onCommand.addListener((command, tab) => {
-  if (command === 'toggle-pin') void shortenAndCopy(tab);
+  if (command === 'toggle-pin') return shortenAndCopy(tab);
 });
-chrome.action.onClicked.addListener((tab) => { void shortenAndCopy(tab); });
+chrome.action.onClicked.addListener(shortenAndCopy);

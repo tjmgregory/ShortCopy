@@ -1,6 +1,8 @@
-# Short Copy 1.2.0 release candidate
+# Short Copy 1.2.1 release candidate
 
-`short-copy-1.2.0.zip` contains only the runtime extension files. Archive integrity and manifest field lengths passed. All 17 automated tests passed; a live is.gd API request returned a valid short URL.
+`short-copy-1.2.1.zip` contains only the runtime extension files. Archive integrity and manifest field lengths passed. All 23 automated tests passed; a live is.gd API request returned a valid short URL.
+
+The 1.2.0 archive is superseded by 1.2.1. Toolbar copying was confirmed by Theo on the prior build; keyboard activation still needs validation after reloading 1.2.1.
 
 Not yet submitted. Real Chrome integration testing and screenshots are pending: browser navigation to chrome://extensions is blocked by the browser security policy, and navigation to the developer dashboard returns "Not allowed".
 

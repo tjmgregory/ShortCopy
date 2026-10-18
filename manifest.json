@@ -1,6 +1,6 @@
 {
   "name": "Short Copy - URL Shortener & Copy Link",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Shorten URLs and copy links in one step. Use Alt+Shift+C or click the toolbar icon. Free, with no account required.",
   "permissions": [
     "clipboardWrite",
@@ -18,11 +18,14 @@
     "128": "128.png"
   },
   "commands": {
-    "toggle-pin": {
+    "_execute_action": {
       "suggested_key": {
-        "default": "Alt+Shift+C"
-      },
-      "description": "Shorten and copy the current URL"
+        "default": "Alt+Shift+C",
+        "mac": "Alt+Shift+C"
+      }
+    },
+    "toggle-pin": {
+      "description": "Shorten and copy the current URL (legacy shortcut)"
     }
   },
   "manifest_version": 3,

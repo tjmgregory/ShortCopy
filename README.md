@@ -12,7 +12,9 @@ Load this directory using **Load unpacked** at `chrome://extensions` with Develo
 
 Run checks with `node --test tests/*.test.cjs`.
 
-The manifest keeps the original `toggle-pin` command identifier to preserve existing users' shortcut assignments.
+The default shortcut uses Chrome's native `_execute_action` command, so keyboard and toolbar use the same handler. The original `toggle-pin` command remains available for existing shortcut assignments.
+
+After reloading an unpacked copy, check **Activate the extension** under Short Copy at `chrome://extensions/shortcuts`. Assign the shortcut there; the separate legacy entry is retained only for compatibility. The toolbar badge shows `...` while working, `✓` after copying, and `!` on failure. Hover over the icon for the error message.
 
 ## Release
 
