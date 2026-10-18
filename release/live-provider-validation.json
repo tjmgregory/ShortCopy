@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-18T16:52:50.491Z",
+  "provider": "da.gd",
+  "destination": "https://www.google.com/search?q=shortcopy-validation-1792342370266&source=chrome&ie=UTF-8",
+  "shortened": "https://da.gd/cSA87",
+  "redirectStatus": 302,
+  "exactDestination": true,
+  "method": "Actual shortenUrl function with live fetch; only Chrome permission check stubbed. Clipboard not covered."
+}

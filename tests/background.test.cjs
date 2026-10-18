@@ -9,7 +9,11 @@ function setup(options = {}) {
     fetch: async (...args) => {
       calls.fetch.push(args);
       if (options.networkError) throw new TypeError('Network failed');
-      return { ok: options.httpOk ?? true, status: options.status ?? 503, json: async () => { if (options.invalidJson) throw new SyntaxError('Invalid JSON'); return options.data ?? { shorturl: 'https://is.gd/abc123' }; } };
+      return {
+        ok: options.httpOk ?? true,
+        status: options.status ?? 503,
+        text: async () => options.responseBody ?? (options.data ? JSON.stringify(options.data) : 'https://da.gd/abc123\n'),
+      };
     },
     chrome: {
       permissions: { contains: async () => options.hasAccess ?? true },
@@ -31,7 +35,7 @@ test('shortens the exact URL and only reports success after copying', async () =
   await run();
   assert.equal(calls.fetch[0][1].body.get('url'), 'https://example.com/?x=1&y=2');
   assert.equal(calls.fetch[0][1].credentials, 'omit');
-  assert.deepEqual(calls.copied, ['https://is.gd/abc123']);
+  assert.deepEqual(calls.copied, ['https://da.gd/abc123']);
   assert.equal(calls.notices[0].title, 'Copied!');
   assert.equal(calls.closed, 1);
 });
@@ -65,7 +69,7 @@ test('default shortcut invokes the native toolbar action', async () => {
   const { calls } = setup();
   await calls.action({ url: 'https://example.com/from-shortcut' });
   assert.equal(calls.fetch[0][1].body.get('url'), 'https://example.com/from-shortcut');
-  assert.deepEqual(calls.copied, ['https://is.gd/abc123']);
+  assert.deepEqual(calls.copied, ['https://da.gd/abc123']);
   assert.deepEqual(calls.badges, ['...', '✓']);
 });
 
@@ -73,13 +77,13 @@ test('existing custom shortcuts still invoke the copy workflow', async () => {
   const { calls } = setup();
   await calls.command('toggle-pin', { url: 'https://example.com/legacy' });
   assert.equal(calls.fetch[0][1].body.get('url'), 'https://example.com/legacy');
-  assert.deepEqual(calls.copied, ['https://is.gd/abc123']);
+  assert.deepEqual(calls.copied, ['https://da.gd/abc123']);
 });
 
 test('legacy command without a supplied tab queries the active tab', async () => {
   const { calls } = setup();
   await calls.command('toggle-pin');
-  assert.deepEqual(calls.copied, ['https://is.gd/abc123']);
+  assert.deepEqual(calls.copied, ['https://da.gd/abc123']);
 });
 
 test('unrelated command does not shorten or overwrite clipboard', async () => {
@@ -100,13 +104,13 @@ test('notification failure does not turn a successful copy into an error', async
   const { calls } = setup({ notificationsFail: true });
   await calls.action({ url: 'https://example.com' });
   assert.deepEqual(calls.badges, ['...', '✓']);
-  assert.deepEqual(calls.copied, ['https://is.gd/abc123']);
+  assert.deepEqual(calls.copied, ['https://da.gd/abc123']);
 });
 
 for (const [options, message] of [
-  [{ hasAccess: false }, /not granted.*is.gd/],
-  [{ networkError: true }, /could not connect to is.gd/],
-  [{ invalidJson: true }, /responded.*valid shortening response/],
+  [{ hasAccess: false }, /not granted.*da.gd/],
+  [{ networkError: true }, /could not connect to da.gd/],
+  [{ responseBody: 'Error, database insert failed' }, /could not create a short link/],
   [{ httpOk: false, status: 429 }, /HTTP 429/],
   [{ copyOk: false }, /shortened.*could not copy/],
 ]) {
@@ -115,5 +119,21 @@ for (const [options, message] of [
     await run();
     assert.match(calls.notices[0].message, message);
     if (options.hasAccess === false) assert.equal(calls.fetch.length, 0);
+  });
+}
+
+test('uses the provider API with exact form-encoded URL and plain-text response', async () => {
+  const { calls, run } = setup();
+  await run({ url: 'https://www.google.com/search?q=facebook&oq=face&sourceid=chrome&source=chrome.ob&ie=UTF-8' });
+  assert.equal(calls.fetch[0][0], 'https://da.gd/s');
+  assert.equal(calls.fetch[0][1].headers.Accept, 'text/plain');
+  assert.equal(calls.fetch[0][1].body.get('url'), 'https://www.google.com/search?q=facebook&oq=face&sourceid=chrome&source=chrome.ob&ie=UTF-8');
+});
+for (const body of ['Error, database insert failed', '<html>Blocked</html>', '', 'https://da.gd.evil.example/a', 'https://da.gd/a?redirect=evil', 'javascript:alert(1)']) {
+  test(`rejects non-link provider response: ${body}`, async () => {
+    const { calls, run } = setup({ responseBody: body });
+    await run();
+    assert.equal(calls.copied.length, 0);
+    assert.match(calls.notices[0].message, /could not create a short link/);
   });
 }

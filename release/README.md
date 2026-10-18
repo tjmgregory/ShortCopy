@@ -1,19 +1,22 @@
-# Short Copy 1.2.2 release candidate
+# Short Copy 1.3.0 release candidate
 
-`short-copy-1.2.2.zip` contains only the runtime extension files. Archive integrity and manifest field lengths passed. All 28 automated tests passed; a live is.gd API request returned a valid short URL.
+Use `short-copy-1.3.0.zip`. All earlier archives are superseded.
 
-The 1.2.0 archive is superseded by 1.2.2. Toolbar copying was confirmed by Theo on the prior build; keyboard activation still needs validation after reloading 1.2.2.
+## Validation
 
-Not yet submitted. Real Chrome integration testing and screenshots are pending: browser navigation to chrome://extensions is blocked by the browser security policy, and navigation to the developer dashboard returns "Not allowed".
+- 35 automated tests pass, including malformed provider responses, exact URL encoding, native action and legacy shortcut handling, clipboard failures and concurrency.
+- Actual `shortenUrl` function tested with a live da.gd request for a fresh Google Search URL. The short link returned HTTP 302 to the exact input URL. See live-provider-validation.json.
+- Separate live requests created fresh links for a Google support URL and a long Google Search URL; both redirected to the exact input.
+- Theo confirmed keyboard invocation and toolbar copying on previous builds. The new provider still needs a final Chrome smoke test after reloading.
 
-Manual test:
-1. Load the repository directory at chrome://extensions using Load unpacked.
-2. Open https://example.com. Invoke Option+Shift+C on Mac (Alt+Shift+C elsewhere), then paste into a text field. Confirm an is.gd link and success notification.
-3. Repeat using the toolbar icon.
-4. Let the service worker go idle, then repeat.
-5. Disconnect the network and invoke it. Confirm an error notification and unchanged clipboard contents.
-6. Confirm browser settings pages and local files are rejected.
+## Root cause
 
-Upload to the original store item only after these pass. Submission text is in ../store/submission.md.
+is.gd returned HTTP 200, Content-Type text/html, body `Error, database insert failed` for newly created links. Existing URLs such as example.com and a simple Google search returned cached links. Fresh example.com URLs failed too, ruling out a Google-only restriction. v.gd and a custom is.gd alias failed with the same database error.
 
-Version 1.2.2 distinguishes withheld is.gd host access, network failure, timeout, HTTP failure, invalid JSON and clipboard failure. Theo confirmed keyboard invocation reaches the loading/error badge on 1.2.1. The underlying runtime error remains unconfirmed until the new diagnostic message is observed.
+The earlier ERR_BLOCKED_BY_CLIENT observed during automated navigation was not sufficient evidence of a user-installed blocker. No browser security settings were changed.
+
+Version 1.3.0 replaces is.gd with da.gd. Permissions, privacy policy and store copy reflect the change. No fallback sends the URL to a second provider.
+
+## Remaining release work
+
+Reload the unpacked extension and allow the declared da.gd host permission if Chrome prompts. Test a fresh URL using shortcut and toolbar. Capture real Chrome screenshots. Upload to the existing store item and submit. Browser automation currently blocks chrome://extensions and the developer-dashboard navigation returned Not allowed.

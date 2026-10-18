@@ -1,10 +1,10 @@
 # Short Copy
 
-A small Chrome URL shortener. Press **Alt+Shift+C** (Option+Shift+C on Mac) or click the toolbar icon to shorten the current tab's URL with is.gd and copy the result to your clipboard. No account or API key required.
+A small Chrome URL shortener. Press **Alt+Shift+C** (Option+Shift+C on Mac) or click the toolbar icon to shorten the current tab's URL with da.gd and copy the result to your clipboard. No account or API key required.
 
 Change the shortcut at `chrome://extensions/shortcuts`.
 
-Requires Chrome 116 or later and an internet connection. Supports HTTP and HTTPS pages. URLs are sent to is.gd only when invoked. See [Privacy](PRIVACY.md).
+Requires Chrome 116 or later and an internet connection. Supports HTTP and HTTPS pages. URLs are sent to da.gd only when invoked. See [Privacy](PRIVACY.md).
 
 ## Development
 
