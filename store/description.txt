@@ -1,0 +1,23 @@
+Turn the page you're viewing into a short, shareable link without opening another website. Short Copy creates an is.gd link and puts it straight on your clipboard, ready to paste into a message, email or document.
+
+SHORTEN AND COPY IN ONE STEP
+• Press Alt+Shift+C, or click the Short Copy toolbar icon.
+• The current tab's URL is shortened with is.gd.
+• A notification confirms when the short link has been copied.
+• Paste it wherever you want to share it.
+
+A SMALL TOOL FOR EVERYDAY SHARING
+No account, API key or subscription is required. Short Copy focuses on one task: shortening the current page's link and copying it. There are no dashboards to manage or extra tabs to close.
+
+YOUR SHORTCUT, YOUR CHOICE
+On Mac, Alt is the Option key. To change the shortcut or resolve a conflict with another extension, open chrome://extensions/shortcuts and find Short Copy.
+
+CLEAR ABOUT DATA
+Short Copy reads the current page's address only when you invoke it. It sends that URL to is.gd to create the short link. It does not read page content or your clipboard, collect browsing history, or include advertising or analytics code. The shortening provider receives your URL and network information, including your IP address, under its own privacy policy. Shortened links are shareable, so avoid shortening private links or URLs containing secrets.
+
+Works with HTTP and HTTPS web pages. An internet connection and an available is.gd service are required. Chrome settings pages and local files cannot be shortened.
+
+WHAT'S NEW IN 1.2.0
+Updated for Manifest V3 and current Chrome. Added toolbar access, clearer error notifications and checks to avoid replacing your clipboard when shortening fails.
+
+Source and support: https://github.com/tjmgregory/ShortCopy
